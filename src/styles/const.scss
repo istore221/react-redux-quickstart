@@ -1,0 +1,21 @@
+$colors: (
+ primary: #5890FF,
+ success: #7ED321,
+ info: #59ABE3,
+ danger: #FF5F2E,
+ warning: #FF9700,
+ default: #E4F1FE
+ );
+
+ @each $key, $val in $colors {
+  .bg-#{$key} {
+    background: $val;
+  }
+ }
+
+
+ @each $key, $val in $colors {
+  .text-#{$key} {
+    color: $val !important;
+  }
+ }
