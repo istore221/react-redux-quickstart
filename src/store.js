@@ -16,10 +16,10 @@ const myMiddleware = store => next => action => {
 
 const getMiddleware = () => {
   if (process.env.NODE_ENV === 'production') {
-    return applyMiddleware(myRouterMiddleware,createLogger());
+    return applyMiddleware(myRouterMiddleware,createLogger(),promiseMiddleware());
   } else {
     // Enable additional logging in non-production environments.
-    return applyMiddleware(myRouterMiddleware,createLogger())
+    return applyMiddleware(myRouterMiddleware,createLogger(),promiseMiddleware())
   }
 };
 
