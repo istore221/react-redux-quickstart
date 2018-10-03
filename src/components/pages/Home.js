@@ -14,10 +14,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators(blogActions, dispatch);
 
+const HelloWorld = ({name}) => <div>{`Hi ${name}`}</div>
+
 
 class Home extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = { counter: 0 };
 
+  }
 
 
   renderPosts(){
@@ -51,6 +57,14 @@ class Home extends Component {
 
   }
 
+  onClick = () => {
+
+    this.setState({
+       counter: this.state.counter+=1
+     });
+  }
+
+
 
 
 
@@ -58,10 +72,13 @@ class Home extends Component {
     return (
       <div>
         <h1>Home Page <Link to="/about">About</Link>  </h1>
-        <h1>Posts</h1>
+        {this.state.counter}
+        <HelloWorld name="kalana" />
+        <h1 onClick={this.onClick}>Posts</h1>
         {this.renderPosts()}
         <h1>Comments</h1>
         {this.renderComments()}
+
       </div>
     );
   }
