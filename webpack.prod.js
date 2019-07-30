@@ -1,81 +1,64 @@
 const webpack = require('webpack'),
-merge = require('webpack-merge'),
-UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
-CompressionPlugin = require('compression-webpack-plugin'),
-HtmlWebpackPlugin = require('html-webpack-plugin'),
-MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin"),
-common = require('./webpack.common.js');
-
-
+      merge = require('webpack-merge'),
+      HtmlWebpackPlugin = require('html-webpack-plugin'),
+      CompressionPlugin = require('compression-webpack-plugin'),
+      MiniCssExtractPlugin = require("mini-css-extract-plugin"),
+      OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin'),
+      common = require('./webpack.common.js');
 
 module.exports = merge(common, {
+
   output: {
+    //publicPath: '/',
     filename: '[name]-[hash:6].bundle.min.js'
   },
-  devServer:{
-    hot: false
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
-  },
   module: {
-    rules: [
-      {
-        test:  /\.(sass|scss)$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          },{
-            loader: "css-loader",
-            options: {
-              minimize: true
-            }
-          },{
-            loader: "postcss-loader",
-            options: {
-              autoprefixer: require('autoprefixer')()
-            }
-          },{
-            loader: "sass-loader"
-          }
-        ]
-      }
-    ]
+     rules: [
+       {
+         test:  /\.(sass|scss)$/,
+         use: [
+           {
+             loader: MiniCssExtractPlugin.loader
+           },{
+             loader: "css-loader"
+           },{
+             loader: "postcss-loader",
+             options: {
+               autoprefixer: require('autoprefixer')()
+             }
+           },{
+             loader: "sass-loader"
+           }
+         ]
+       }
+     ]
   },
   plugins: [
-    new UglifyJSPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: true
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      "FIREBASE_URL": JSON.stringify("https://myapp-production.firebaseio.com"),
+      "DOMAIN": JSON.stringify("https://custo.furniture")
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.ejs',
-      filename: 'index.html',
-      excludeChunks: ['base'],
-      minify: {
-        collapseWhitespace: true,
-        collapseInlineTagWhitespace: true,
-        removeComments: true,
-        removeRedundantAttributes: true
-      }
-    }),
-    new CompressionPlugin({
-      asset: "[path].gz[query]",
-      algorithm: "gzip",
-      test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-      threshold: 10240,
-      minRatio: 0.8
-    }),
-    new MiniCssExtractPlugin({
+       hash: true,
+       template: './src/index.ejs',
+       filename: './index.html',
+       excludeChunks: ['base'],
+       minify: {
+         collapseWhitespace: true,
+         collapseInlineTagWhitespace: true,
+         removeComments: true,
+         removeRedundantAttributes: true
+       }
+     }),
+     new MiniCssExtractPlugin({
       filename: "assets/css/[name].[hash].min.css",
       chunkFilename: "[id].[hash].css"
     }),
-    new OptimizeCSSAssetsPlugin({})
-
-
+    new OptimizeCssAssetsPlugin({}),
+    new CompressionPlugin({
+      test: /\.(js|css)$/
+    }),
   ]
+
 });
